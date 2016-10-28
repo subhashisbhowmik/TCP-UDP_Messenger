@@ -1,4 +1,4 @@
-package com.subhashis.tcp_udpmessenger;
+package com.subhashis.tcp_udp_messenger;
 
 import org.junit.Test;
 
