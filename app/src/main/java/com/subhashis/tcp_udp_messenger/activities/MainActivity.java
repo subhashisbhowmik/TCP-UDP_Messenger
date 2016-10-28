@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     UDP_Socket_Service mService;
     boolean mBound = false;
+    final Context activityContext=this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +37,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mService.startLogging();
+                        mService.attachActivity(activityContext);
                     }
                 });
+                while (true){
+
+                }
             }
         }).start();
-        //mService.startLogging();
     }
 
     @Override
@@ -49,10 +53,17 @@ public class MainActivity extends AppCompatActivity {
         mService.stopIfDone();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mBound) unbindService(mConnection);
+    }
+
+
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName className,
+        public void onServiceConnected(ComponentName componentName,
                                        IBinder service) {
             UDP_Socket_Service.LocalBinder binder = (UDP_Socket_Service.LocalBinder) service;
             mService = binder.getService();
@@ -60,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName arg0) {
+        public void onServiceDisconnected(ComponentName componentName) {
             mBound = false;
         }
     };
