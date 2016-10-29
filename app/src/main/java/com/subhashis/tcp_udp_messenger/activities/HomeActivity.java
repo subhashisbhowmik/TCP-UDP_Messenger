@@ -104,7 +104,7 @@ public class HomeActivity extends AppCompatActivity implements ConnectionsFragme
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 

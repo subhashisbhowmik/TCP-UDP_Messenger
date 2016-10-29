@@ -4,6 +4,7 @@
     <string-array name="tabs">
         <item>Connections</item>
         <item>Listen</item>
+        <item>History</item>
     </string-array>
     <string name="action_settings">Settings</string>
 
