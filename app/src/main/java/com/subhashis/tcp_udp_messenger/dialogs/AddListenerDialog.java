@@ -112,6 +112,6 @@ public class AddListenerDialog extends DialogFragment {
     }
 
     public interface Communicator{
-        void onPassMessage(String s);
+        void onPassMessage(String ip, int port, boolean udp);
     }
 }

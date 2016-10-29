@@ -1,8 +1,13 @@
 package com.subhashis.tcp_udp_messenger.activities;
 
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -18,6 +23,7 @@ import android.view.View;
 import com.subhashis.tcp_udp_messenger.R;
 import com.subhashis.tcp_udp_messenger.dialogs.AddListenerDialog;
 import com.subhashis.tcp_udp_messenger.fragments.ConnectionsFragment;
+import com.subhashis.tcp_udp_messenger.services.UDP_Socket_Service;
 import com.subhashis.tcp_udp_messenger.slider.SlidingTabLayout;
 
 public class HomeActivity extends AppCompatActivity implements ConnectionsFragment.OnFragmentInteractionListener,AddListenerDialog.Communicator {
@@ -25,6 +31,8 @@ public class HomeActivity extends AppCompatActivity implements ConnectionsFragme
     ViewPager pager;
     SlidingTabLayout tabs;
     android.app.FragmentManager mFragmentManager;
+    UDP_Socket_Service mService;
+    boolean mBound=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,42 @@ public class HomeActivity extends AppCompatActivity implements ConnectionsFragme
                 addListenerDialog.show(mFragmentManager,"AddListenerDialog");
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(this, UDP_Socket_Service.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(mService==null);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mService.startLogging();
+                        mService.attachActivity(activityContext);
+                    }
+                });
+                while (true){
+
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mService.stopIfDone();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mService.detachActivity(this);
+        if(mBound) unbindService(mConnection);
     }
 
     @Override
@@ -80,7 +124,7 @@ public class HomeActivity extends AppCompatActivity implements ConnectionsFragme
     }
 
     @Override
-    public void onPassMessage(String s) {
+    public void onPassMessage(String ip, int port,boolean udp) {
 
     }
 
@@ -108,5 +152,20 @@ public class HomeActivity extends AppCompatActivity implements ConnectionsFragme
         }
     }
 
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName,
+                                       IBinder service) {
+            UDP_Socket_Service.LocalBinder binder = (UDP_Socket_Service.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mBound = false;
+        }
+    };
 
 }
