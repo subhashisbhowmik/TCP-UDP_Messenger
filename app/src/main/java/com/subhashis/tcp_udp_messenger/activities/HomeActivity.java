@@ -8,23 +8,23 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.subhashis.tcp_udp_messenger.R;
-import com.subhashis.tcp_udp_messenger.fragments.HolderFragment;
+import com.subhashis.tcp_udp_messenger.dialogs.AddListenerDialog;
+import com.subhashis.tcp_udp_messenger.fragments.ConnectionsFragment;
 import com.subhashis.tcp_udp_messenger.slider.SlidingTabLayout;
 
-public class HomeActivity extends AppCompatActivity implements HolderFragment.OnFragmentInteractionListener {
+public class HomeActivity extends AppCompatActivity implements ConnectionsFragment.OnFragmentInteractionListener,AddListenerDialog.Communicator {
     final Context activityContext =this;
     ViewPager pager;
     SlidingTabLayout tabs;
+    android.app.FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +37,16 @@ public class HomeActivity extends AppCompatActivity implements HolderFragment.On
         pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));
         tabs.setDistributeEvenly(true);
         tabs.setViewPager(pager);
-
+        mFragmentManager=getFragmentManager();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                AddListenerDialog addListenerDialog=new AddListenerDialog();
+
+                addListenerDialog.show(mFragmentManager,"AddListenerDialog");
             }
         });
     }
@@ -76,16 +79,17 @@ public class HomeActivity extends AppCompatActivity implements HolderFragment.On
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onPassMessage(String s) {
+
+    }
 
     class CustomPagerAdapter extends FragmentPagerAdapter {
-        String[] tabNames=new String [3];
+        String[] tabNames;
 
         public CustomPagerAdapter(FragmentManager fm) {
             super(fm);
-            tabNames[0] = "Connections"; //getResources().getString(R.string.tab1);
-            tabNames[1] = "Create"; //getResources().getString(R.string.tab2);
-            tabNames[2] = "Listen"; //getResources().getString(R.string.tab3);
-
+            tabNames=getResources().getStringArray(R.array.tabs);
         }
 
         @Override
@@ -95,12 +99,12 @@ public class HomeActivity extends AppCompatActivity implements HolderFragment.On
 
         @Override
         public Fragment getItem(int position) {
-            return HolderFragment.newInstance(activityContext,String.valueOf(position), "");
+            return ConnectionsFragment.newInstance(activityContext,String.valueOf(position), "");
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
     }
 

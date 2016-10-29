@@ -13,12 +13,12 @@ import com.subhashis.tcp_udp_messenger.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HolderFragment.OnFragmentInteractionListener} interface
+ * {@link ConnectionsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HolderFragment#newInstance} factory method to
+ * Use the {@link ConnectionsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HolderFragment extends Fragment {
+public class ConnectionsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,7 +31,7 @@ public class HolderFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public HolderFragment() {
+    public ConnectionsFragment() {
         // Required empty public constructor
     }
 
@@ -41,11 +41,11 @@ public class HolderFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment HolderFragment.
+     * @return A new instance of fragment ConnectionsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HolderFragment newInstance(Context c,String param1, String param2) {
-        HolderFragment fragment = new HolderFragment();
+    public static ConnectionsFragment newInstance(Context c, String param1, String param2) {
+        ConnectionsFragment fragment = new ConnectionsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,7 +67,7 @@ public class HolderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_holder, container, false);
+        return inflater.inflate(R.layout.fragment_connections, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
